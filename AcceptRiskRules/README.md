@@ -1,4 +1,4 @@
-#Accept Risk Rules script
+# Accept Risk Rules script
 *Important: See Requirements and Setup Instructions below before trying to run this script*
 
 This script exports the Accept Risk Rules out of SecurityCenter 5 into an XML format (which you can easily open in Excel if need be).
@@ -24,7 +24,7 @@ The XML export will provide the following fields:
 
 Sorry, I haven't been able to figure out a way to get the plugin severity to show as I've only been able to get it to show for active vulnerabilities.  Since this script pulls rules for vulnerabilities that no longer apply it is unable to determine the plugin severity.  I might figure out a way to get this information in the future.
 
-##Requirements
+## Requirements
 Tenable SecurityCenter 5
 Python 3 (script was designed using Python 3.6)
 
@@ -42,10 +42,10 @@ pip install dicttoxml
 
 If you need to install manually, I would recommend you go to the pySecurityCenter and dicttoxml GitHub sites directly and follow their instructions for a manual installation of those modules.
 
-##Included files in this package
+## Included files in this package
 - AcceptRiskRules.py
 - pyCommon.py
 - pyLogging.py
 - pyTenableConfig.py
 
-##Setup Instructions
+## Setup Instructions
