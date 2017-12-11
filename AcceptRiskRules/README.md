@@ -25,8 +25,8 @@ The XML export will provide the following fields:
 Sorry, I haven't been able to figure out a way to get the plugin severity to show as I've only been able to get it to show for active vulnerabilities.  Since this script pulls rules for vulnerabilities that no longer apply it is unable to determine the plugin severity.  I might figure out a way to get this information in the future.
 
 ## Requirements
-Tenable SecurityCenter 5
-Python 3 (script was designed using Python 3.6)
+- Tenable SecurityCenter 5
+- Python 3 (script was designed using Python 3.6)
 
 Aside from the standard library of modules that come with Python 3 you will need to install the following modules:
 - [pySecurityCenter](https://github.com/SteveMcGrath/pySecurityCenter)
