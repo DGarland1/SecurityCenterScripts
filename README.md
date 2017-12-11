@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # SecurityCenterScripts
 These scripts came about from a need to get around some limitations within SecurityCenter as well as to help meet regulatory compliance (PCI DSS, HIPAA, NERC-CIP, etc.)
 
