@@ -35,8 +35,7 @@ Aside from the standard library of modules that come with Python 3 you will need
 Hopefully I'm not forgetting anything.  Let me know if I am.
 
 If your system running Python has access to the internet, you can install the modules using the commands:
-'''
-pip install pysecuritycenter
+'''pip install pysecuritycenter
 pip install dicttoxml
 '''
 
