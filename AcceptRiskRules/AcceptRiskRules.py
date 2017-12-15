@@ -16,18 +16,13 @@
 #        password        - password to log into SecurityCenter
 #        fldrloc         - folder location to store results
 #
-#    'pyEmail.py' file is used to send out email alerts for failed scripts.
-#    Edit the variables 'host', 'port', 'sender', and 'recipient' variables in
-#    the 'pyEmail.py' file for use with the SMTP email server.
-#
 #    'pyLogging.py' file is a set of reusable code so that the scripts
 #    can write to both console (when this script is ran from console) as well
 #    as to a defined log file.
 #
-#    variable 'scriptname' required for pyEmail.py and pyLogging.py classes
-#    Must be defined in calling script as:
-#       import os
-#       scriptname = os.path.splitext(os.path.basename(__file__))[0]
+#    'pyCommon.py' file is a set of reusable code for various purposes.  Most of my
+#    scripts make use of the functions in this Python script.
+#
 
 # Import SYS module
 import sys
@@ -37,9 +32,8 @@ import os
 from pyLogging import clsLogging
 
 #--- Prevent the creation of compiled import modules ---
-# Used to prevent compiling pyTenableConfig.py (protected) into a
+# Used to prevent compiling pyTenableConfig.py (if protected) into a
 # pyc file (unprotected)
-# Also ensures that this script is always using the latest module code
 sys.dont_write_bytecode = True
 
 # --- Get name of script and store as variable ---
@@ -95,21 +89,9 @@ def main():
 
     data = getRuleData(hostip, username, password)
 
-    # Enable the writedev line below to help with development and
-    # troubleshooting data from SecurityCenter
-    #
-    # Creates a JSON and XML output of the raw SecurityCenter data
-    #
-    # If you are developing, it is helpful to comment out the
-    # data = parsedata(data) and writexml lines in order to get the JSON
-    # file by itself to see what the data structure is like
-
-    #writedev(fldrloc, scriptname, data, logger)
-
     # Write parse data (stored as dictionary objects in a list variable) to XML
     try:
         writexml(fldrloc, scriptname, data, elementname, logger)
-        pass
     except Exception:
         logger.error('Error in writexml function', exc_info=True)
         closeexit(1)
@@ -120,11 +102,6 @@ def main():
 
 def getRuleData(hostip, username, password):
     #--- Collect data from SecurityCenter ---
-    #
-    #    The following line in this section needs to be modified to gather the
-    #    specific data you want from SecurityCenter
-    #
-    #        details = sc.analysis(('repositoryIDs','=','1'),('pluginID','=','34252'), tool='vulndetails')
     #
     #    Refer to the following sites for more information on how to build the query
     #    pySecurityCenter Python Module
@@ -225,8 +202,8 @@ def getRuleData(hostip, username, password):
                     else:
                         CurrentlyApplies = 'False'
 
-                    ruledict = writetodict(targetIP, CurrentlyApplies, status, targetIP, rule['protocol'], rule['port'], expires, rule[
-                        'plugin']['id'], rule['plugin']['name'], comments, converttime(rule['createdTime']), rule['user']['username'])
+                    ruledict = writetodict(targetIP, rule['repository']['name'], CurrentlyApplies, status, targetIP, rule['protocol'], rule['port'],
+                                           expires, rule['plugin']['id'], rule['plugin']['name'], comments, converttime(rule['createdTime']), rule['user']['username'])
                     rulelist.append(ruledict)  # append dictionary to list
                     ruledict = {}  # clear dictionary for next run through
 
@@ -249,8 +226,8 @@ def getRuleData(hostip, username, password):
                         else:
                             CurrentlyApplies = 'False'
 
-                        ruledict = writetodict(targetIP, CurrentlyApplies, status, "All Hosts", rule['protocol'], rule['port'], expires, rule[
-                            'plugin']['id'], rule['plugin']['name'], comments, converttime(rule['createdTime']), rule['user']['username'])
+                        ruledict = writetodict(targetIP, rule['repository']['name'], CurrentlyApplies, status, "All Hosts", rule['protocol'], rule['port'],
+                                               expires, rule['plugin']['id'], rule['plugin']['name'], comments, converttime(rule['createdTime']), rule['user']['username'])
                         rulelist.append(ruledict)  # append dictionary to list
                         ruledict = {}  # clear dictionary for next run through
 
@@ -259,7 +236,7 @@ def getRuleData(hostip, username, password):
                     assetID = rule['hostValue']['id']
                     assetName = rule['hostValue']['name']
                     getassets = sc.analysis(
-                        ('assetID', '=', assetID), tool='sumip')
+                        ('assetID', '=', assetID), ('repositoryIDs', '=', rule['repository']['id']), tool='sumip')
                     for devices in getassets:
                         targetIP = devices['ip']
                         if portFilter == 1:
@@ -275,8 +252,8 @@ def getRuleData(hostip, username, password):
                         else:
                             CurrentlyApplies = 'False'
 
-                        ruledict = writetodict(targetIP, CurrentlyApplies, status, 'Asset: ' + assetName, rule['protocol'], rule['port'], expires, rule[
-                            'plugin']['id'], rule['plugin']['name'], comments, converttime(rule['createdTime']), rule['user']['username'])
+                        ruledict = writetodict(targetIP, rule['repository']['name'], CurrentlyApplies, status, 'Asset: ' + assetName, rule['protocol'], rule['port'],
+                                               expires, rule['plugin']['id'], rule['plugin']['name'], comments, converttime(rule['createdTime']), rule['user']['username'])
                         rulelist.append(ruledict)  # append dictionary to list
                         ruledict = {}  # clear dictionary for next run through
 
@@ -290,7 +267,7 @@ def getRuleData(hostip, username, password):
         closeexit(1)
 
 
-def writetodict(ip, ruleapplies, rulestatus, ruletarget, protocol, port, expires, pluginid, pluginname, comments, time, createdby):
+def writetodict(ip, reponame, ruleapplies, rulestatus, ruletarget, protocol, port, expires, pluginid, pluginname, comments, time, createdby):
     #
     # Simple function to organize the rule data and return it in a dictionary format
     #
@@ -300,6 +277,7 @@ def writetodict(ip, ruleapplies, rulestatus, ruletarget, protocol, port, expires
     try:
         # Write data to dictionary variable
         dictvar['IP'] = ip
+        dictvar['RepoName'] = reponame
         dictvar['RuleApplies'] = ruleapplies
         dictvar['RuleStatus'] = rulestatus
         dictvar['RuleTarget'] = ruletarget
