@@ -9,4 +9,4 @@ Second, I want to give a shout out to Steve McGrath for his work on the [pySecur
 Third, kudos out to the great people at Tenable for creating such an awesome suite of products.
 
 ## About Me
-I am by no way an expert programmer, so my code may look messy to many but hey... they get the job done.
+I am by no way an expert programmer, so my scripts may look messy to many but hey... they get the job done.
