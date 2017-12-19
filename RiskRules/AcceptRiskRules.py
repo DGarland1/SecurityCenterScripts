@@ -186,6 +186,9 @@ def getRuleData(hostip, username, password):
                 else:
                     portFilter = 1
 
+                # Get the Plugin Severity
+                plugSeverity = getSeverity(sc, rule['plugin']['id'])
+
                 # Rule Target is 'IP'
                 if rule['hostType'] == 'ip':
                     targetIP = rule['hostValue']
@@ -203,7 +206,7 @@ def getRuleData(hostip, username, password):
                         CurrentlyApplies = 'False'
 
                     ruledict = writetodict(targetIP, rule['repository']['name'], CurrentlyApplies, status, targetIP, rule['protocol'], rule['port'],
-                                           expires, rule['plugin']['id'], rule['plugin']['name'], comments, converttime(rule['createdTime']), rule['user']['username'])
+                                           expires, rule['plugin']['id'], plugSeverity, rule['plugin']['name'], comments, converttime(rule['createdTime']), rule['user']['username'])
                     rulelist.append(ruledict)  # append dictionary to list
                     ruledict = {}  # clear dictionary for next run through
 
@@ -227,7 +230,7 @@ def getRuleData(hostip, username, password):
                             CurrentlyApplies = 'False'
 
                         ruledict = writetodict(targetIP, rule['repository']['name'], CurrentlyApplies, status, "All Hosts", rule['protocol'], rule['port'],
-                                               expires, rule['plugin']['id'], rule['plugin']['name'], comments, converttime(rule['createdTime']), rule['user']['username'])
+                                               expires, rule['plugin']['id'], plugSeverity, rule['plugin']['name'], comments, converttime(rule['createdTime']), rule['user']['username'])
                         rulelist.append(ruledict)  # append dictionary to list
                         ruledict = {}  # clear dictionary for next run through
 
@@ -253,7 +256,7 @@ def getRuleData(hostip, username, password):
                             CurrentlyApplies = 'False'
 
                         ruledict = writetodict(targetIP, rule['repository']['name'], CurrentlyApplies, status, 'Asset: ' + assetName, rule['protocol'], rule['port'],
-                                               expires, rule['plugin']['id'], rule['plugin']['name'], comments, converttime(rule['createdTime']), rule['user']['username'])
+                                               expires, rule['plugin']['id'], plugSeverity, rule['plugin']['name'], comments, converttime(rule['createdTime']), rule['user']['username'])
                         rulelist.append(ruledict)  # append dictionary to list
                         ruledict = {}  # clear dictionary for next run through
 
@@ -267,7 +270,7 @@ def getRuleData(hostip, username, password):
         closeexit(1)
 
 
-def writetodict(ip, reponame, ruleapplies, rulestatus, ruletarget, protocol, port, expires, pluginid, pluginname, comments, time, createdby):
+def writetodict(ip, reponame, ruleapplies, rulestatus, ruletarget, protocol, port, expires, pluginid, severity, pluginname, comments, time, createdby):
     #
     # Simple function to organize the rule data and return it in a dictionary format
     #
@@ -285,6 +288,7 @@ def writetodict(ip, reponame, ruleapplies, rulestatus, ruletarget, protocol, por
         dictvar['Port'] = port
         dictvar['Expires'] = expires
         dictvar['PluginID'] = pluginid
+        dictvar['Severity'] = severity
         dictvar['PluginName'] = pluginname
         dictvar['Comments'] = comments
         dictvar['CreatedTime'] = time
@@ -296,6 +300,18 @@ def writetodict(ip, reponame, ruleapplies, rulestatus, ruletarget, protocol, por
         closeexit(1)
 
     return dictvar
+
+
+def getSeverity(sc, pluginID):
+    # sc = SecurityCenter connection
+    # pluginID = Plugin ID number to search for
+
+    resp = sc.get('plugin', params={
+        'id': pluginID,
+        'fields': 'riskFactor'})
+    plugresp = resp.json()['response']
+
+    return plugresp['riskFactor']
 
 
 def closeexit(exit_code):

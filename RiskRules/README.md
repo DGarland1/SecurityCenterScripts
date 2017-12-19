@@ -18,12 +18,11 @@ The XML export will provide the following fields:
 - **Port** - Port number the rule applies to.
 - **Expires** - Expiration date of the rule.  If there is no expiration date, it'll be set to Never.
 - **PluginID** - Plugin ID that the rule applies to.
+- **Severity** - Plugin Severity.  Note that audit results (pluginID #'s > 1000000) probably won't show a severity.
 - **PluginName** - Name of the plugin ID.
 - **Comments** - Here are the comments entered when the Accept Risk Rule was created.
 - **CreatedTime** - Time the rule was created.
 - **CreatedBy** - SecurityCenter user who created the rule.
-
-Sorry, I haven't been able to figure out a way to get the plugin severity to show as I've only been able to get it to show for active vulnerabilities.  Since this script pulls rules for vulnerabilities that no longer apply it is unable to determine the plugin severity.  I might figure out a way to get this information in the future.
 
 Log files for the script are stored in the same directory as the script itself.
 
