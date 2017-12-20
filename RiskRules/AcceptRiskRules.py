@@ -50,7 +50,7 @@ logger.info('Running on Python version {}'.format(sys.version))
 # Import common functions from pyCommon
 try:
     logger.info('Import common functions from pyCommon')
-    from pyCommon import converttime, writedev, writexml
+    from pyCommon import converttime, writexml
 except Exception:
     logger.error('Unable to import common functions from pyCommon')
     logger.error(
@@ -263,6 +263,7 @@ def getRuleData(hostip, username, password):
             return rulelist
         else:
             logger.info('No Accept Risk Rules found')
+            closeexit(0)
     except Exception as e:
         logger.error('Error parsing Accept Risk Rules in getRuleData function')
         logger.error('Data string follows')
