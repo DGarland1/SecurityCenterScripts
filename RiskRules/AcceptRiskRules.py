@@ -156,111 +156,9 @@ def getRuleData(hostip, username, password):
         logger.error('Likely cause is the query is malformed', exc_info=True)
         closeexit(1)
 
-    # Create a new list for the all accepted risk rules
-    rulelist = []
-    # Create a new dictionary for the individual accepted risk rule
-    ruledict = {}
-
     try:
         if rules is not None:  # If details variable doesn't come back null/empty
-            # loop through each rule found
-            for rule in rules:
-                # Get when the rule expires
-                # '-1' for never
-                # otherwise, time is in Epoch and needs to be converted to standard date format
-                if rule['expires'] == '-1':
-                    expires = 'Never'
-                else:
-                    expires = converttime(rule['expires'])
-
-                if rule['status'] == '0':
-                    status = 'Active'
-                else:
-                    status = 'Inactive'
-
-                # Get comments from accepted risk rules
-                comments = rule['comments']
-
-                if rule['port'] == 'any' or rule['port'] == '0':
-                    portFilter = 0
-                else:
-                    portFilter = 1
-
-                # Get the Plugin Severity
-                plugSeverity = getSeverity(sc, rule['plugin']['id'])
-
-                # Rule Target is 'IP'
-                if rule['hostType'] == 'ip':
-                    targetIP = rule['hostValue']
-                    if portFilter == 1:
-                        vulndetails = sc.analysis(('acceptRiskStatus', '=', "accepted"), ('pluginID', '=', rule['plugin']['id']), (
-                            'port', '=', rule['port']), ('ip', '=', targetIP), tool='sumip')
-                    else:
-                        vulndetails = sc.analysis(('acceptRiskStatus', '=', "accepted"), (
-                            'pluginID', '=', rule['plugin']['id']), ('ip', '=', targetIP), tool='sumip')
-
-                    # Store Status of whether the rule still applies to IP
-                    if vulndetails is not None:
-                        CurrentlyApplies = 'True'
-                    else:
-                        CurrentlyApplies = 'False'
-
-                    ruledict = writetodict(targetIP, rule['repository']['name'], CurrentlyApplies, status, targetIP, rule['protocol'], rule['port'],
-                                           expires, rule['plugin']['id'], plugSeverity, rule['plugin']['name'], comments, converttime(rule['createdTime']), rule['user']['username'])
-                    rulelist.append(ruledict)  # append dictionary to list
-                    ruledict = {}  # clear dictionary for next run through
-
-                # Rule Target is 'All Hosts'
-                elif rule['hostType'] == 'all':
-                    getall = sc.analysis(
-                        ('repositoryIDs', '=', rule['repository']['id']), tool='sumip')
-                    for devices in getall:
-                        targetIP = devices['ip']
-                        if portFilter == 1:
-                            vulndetails = sc.analysis(('acceptRiskStatus', '=', "accepted"), (
-                                'pluginID', '=', rule['plugin']['id']), ('port', '=', rule['port']), ('ip', '=', targetIP), tool='sumip')
-                        else:
-                            vulndetails = sc.analysis(('acceptRiskStatus', '=', "accepted"), (
-                                'pluginID', '=', rule['plugin']['id']), ('ip', '=', targetIP), tool='sumip')
-
-                        # Store Status of whether the rule still applies to IP
-                        if vulndetails is not None:
-                            CurrentlyApplies = 'True'
-                        else:
-                            CurrentlyApplies = 'False'
-
-                        ruledict = writetodict(targetIP, rule['repository']['name'], CurrentlyApplies, status, "All Hosts", rule['protocol'], rule['port'],
-                                               expires, rule['plugin']['id'], plugSeverity, rule['plugin']['name'], comments, converttime(rule['createdTime']), rule['user']['username'])
-                        rulelist.append(ruledict)  # append dictionary to list
-                        ruledict = {}  # clear dictionary for next run through
-
-                # Rule Target is an 'Asset'
-                elif rule['hostType'] == 'asset':
-                    assetID = rule['hostValue']['id']
-                    assetName = rule['hostValue']['name']
-                    getassets = sc.analysis(
-                        ('assetID', '=', assetID), ('repositoryIDs', '=', rule['repository']['id']), tool='sumip')
-                    for devices in getassets:
-                        targetIP = devices['ip']
-                        if portFilter == 1:
-                            vulndetails = sc.analysis(('acceptRiskStatus', '=', "accepted"), ('pluginID', '=', rule['plugin']['id']), (
-                                'port', '=', rule['port']), ('assetID', '=', assetID), ('ip', '=', targetIP), tool='sumip')
-                        else:
-                            vulndetails = sc.analysis(('acceptRiskStatus', '=', "accepted"), (
-                                'pluginID', '=', rule['plugin']['id']), ('assetID', '=', assetID), ('ip', '=', targetIP), tool='sumip')
-
-                        # Store Status of whether the rule still applies to IP
-                        if vulndetails is not None:
-                            CurrentlyApplies = 'True'
-                        else:
-                            CurrentlyApplies = 'False'
-
-                        ruledict = writetodict(targetIP, rule['repository']['name'], CurrentlyApplies, status, 'Asset: ' + assetName, rule['protocol'], rule['port'],
-                                               expires, rule['plugin']['id'], plugSeverity, rule['plugin']['name'], comments, converttime(rule['createdTime']), rule['user']['username'])
-                        rulelist.append(ruledict)  # append dictionary to list
-                        ruledict = {}  # clear dictionary for next run through
-
-            return rulelist
+            return parserules(sc, rules)
         else:
             logger.info('No Accept Risk Rules found')
             closeexit(0)
@@ -269,6 +167,115 @@ def getRuleData(hostip, username, password):
         logger.error('Data string follows')
         logger.error(e, exc_info=True)
         closeexit(1)
+
+
+def parserules(sc, rules):
+    # sc = SecurityCenter connection
+    # rules = Collection of accept risk rules
+
+    # Create a new list for the all accepted risk rules
+    rulelist = []
+    # Create a new dictionary for the individual accepted risk rule
+    ruledict = {}
+
+    # loop through each rule found
+    for rule in rules:
+        # Get when the rule expires
+        # '-1' for never
+        # otherwise, time is in Epoch and needs to be converted to standard date format
+        if rule['expires'] == '-1':
+            expires = 'Never'
+        else:
+            expires = converttime(rule['expires'])
+
+        if rule['status'] == '0':
+            status = 'Active'
+        else:
+            status = 'Inactive'
+
+        # Get comments from accepted risk rules
+        comments = rule['comments']
+
+        if rule['port'] == 'any' or rule['port'] == '0':
+            portFilter = 0
+        else:
+            portFilter = 1
+
+        # Get the Plugin Severity
+        plugSeverity = getSeverity(sc, rule['plugin']['id'])
+
+        # Rule Target is 'IP'
+        if rule['hostType'] == 'ip':
+            targetIP = rule['hostValue']
+            if portFilter == 1:
+                vulndetails = sc.analysis(('acceptRiskStatus', '=', "accepted"), ('pluginID', '=', rule['plugin']['id']), (
+                    'port', '=', rule['port']), ('ip', '=', targetIP), tool='sumip')
+            else:
+                vulndetails = sc.analysis(('acceptRiskStatus', '=', "accepted"), (
+                    'pluginID', '=', rule['plugin']['id']), ('ip', '=', targetIP), tool='sumip')
+
+            # Store Status of whether the rule still applies to IP
+            if vulndetails is not None:
+                CurrentlyApplies = 'True'
+            else:
+                CurrentlyApplies = 'False'
+
+            ruledict = writetodict(targetIP, rule['repository']['name'], CurrentlyApplies, status, targetIP, rule['protocol'], rule['port'],
+                                   expires, rule['plugin']['id'], plugSeverity, rule['plugin']['name'], comments, converttime(rule['createdTime']), rule['user']['username'])
+            rulelist.append(ruledict)  # append dictionary to list
+            ruledict = {}  # clear dictionary for next run through
+
+        # Rule Target is 'All Hosts'
+        elif rule['hostType'] == 'all':
+            getall = sc.analysis(
+                ('repositoryIDs', '=', rule['repository']['id']), tool='sumip')
+            for devices in getall:
+                targetIP = devices['ip']
+                if portFilter == 1:
+                    vulndetails = sc.analysis(('acceptRiskStatus', '=', "accepted"), (
+                        'pluginID', '=', rule['plugin']['id']), ('port', '=', rule['port']), ('ip', '=', targetIP), tool='sumip')
+                else:
+                    vulndetails = sc.analysis(('acceptRiskStatus', '=', "accepted"), (
+                        'pluginID', '=', rule['plugin']['id']), ('ip', '=', targetIP), tool='sumip')
+
+                # Store Status of whether the rule still applies to IP
+                if vulndetails is not None:
+                    CurrentlyApplies = 'True'
+                else:
+                    CurrentlyApplies = 'False'
+
+                ruledict = writetodict(targetIP, rule['repository']['name'], CurrentlyApplies, status, "All Hosts", rule['protocol'], rule['port'],
+                                       expires, rule['plugin']['id'], plugSeverity, rule['plugin']['name'], comments, converttime(rule['createdTime']), rule['user']['username'])
+                rulelist.append(ruledict)  # append dictionary to list
+                ruledict = {}  # clear dictionary for next run through
+
+        # Rule Target is an 'Asset'
+        elif rule['hostType'] == 'asset':
+            assetID = rule['hostValue']['id']
+            assetName = rule['hostValue']['name']
+            getassets = sc.analysis(
+                ('assetID', '=', assetID), ('repositoryIDs', '=', rule['repository']['id']), tool='sumip')
+            for devices in getassets:
+                targetIP = devices['ip']
+                if portFilter == 1:
+                    vulndetails = sc.analysis(('acceptRiskStatus', '=', "accepted"), ('pluginID', '=', rule['plugin']['id']), (
+                        'port', '=', rule['port']), ('assetID', '=', assetID), ('ip', '=', targetIP), tool='sumip')
+                else:
+                    vulndetails = sc.analysis(('acceptRiskStatus', '=', "accepted"), (
+                        'pluginID', '=', rule['plugin']['id']), ('assetID', '=', assetID), ('ip', '=', targetIP), tool='sumip')
+
+                # Store Status of whether the rule still applies to IP
+                if vulndetails is not None:
+                    CurrentlyApplies = 'True'
+                else:
+                    CurrentlyApplies = 'False'
+
+                ruledict = writetodict(targetIP, rule['repository']['name'], CurrentlyApplies, status, 'Asset: ' + assetName, rule['protocol'], rule['port'],
+                                       expires, rule['plugin']['id'], plugSeverity, rule['plugin']['name'], comments, converttime(rule['createdTime']), rule['user']['username'])
+                rulelist.append(ruledict)  # append dictionary to list
+                ruledict = {}  # clear dictionary for next run through
+
+    return rulelist
 
 
 def writetodict(ip, reponame, ruleapplies, rulestatus, ruletarget, protocol, port, expires, pluginid, severity, pluginname, comments, time, createdby):
