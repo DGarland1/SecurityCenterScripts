@@ -36,6 +36,17 @@ Aside from the standard library of modules that come with Python 3 you will need
 - [pySecurityCenter](https://github.com/SteveMcGrath/pySecurityCenter)
 - [dicttoxml](https://github.com/quandyfactory/dicttoxml)
 
+You'll also need the pyLogging.py and pyCommon.py files in the parent directory as well.
+
+To run this script, your folder structure should look like this
+
+    \---SecurityCenterScripts
+        |   pyCommon.py
+        |   pyLogging.py
+        |
+        \---RiskRules
+                AcceptRiskRules.py
+
 Hopefully I'm not forgetting anything.  Let me know if I am.
 
 If your system running Python has access to the internet, you can install the modules using the commands:
@@ -51,16 +62,25 @@ You'll need to download all these files:
 - AcceptRiskRules.py
 - pyCommon.py
 - pyLogging.py
-- pyTenableConfig.py
 
 ## Setup Instructions
-Only one file needs to be modified and that is the 'pyTenableConfig.py' file.  Just open the file in a text editor for the following variables:
-- **hostip** - Set the IP address of your SecurityCenter server.
-- **username** - Enter the username of the user account you wish to use.  Case sensitive in SecurityCenter.  Must have at least 'Auditor' or 'Read Only' privileges.
-- **password** - Enter the password associated with the user account.
-- **fldrloc** - Enter the location where you want to store the resulting XML file this script generates.
+A config.conf file containing the IP address of your SecurityCenter server, a user account with at least full read privileges (Auditor), a password, and a folder location to export the file to.  This config.conf file will be required for all of my SecurityCenter scripts.
+
+If you don't already have the config.conf file, running the script from a command line for the first time you'll be asked a series of questions (IP, username, password, path) and the config.conf file will be built for you automatically and stored in the parent directory.
+
+See below for an example of the config.conf file:
+
+    [SecurityCenter]
+    host = 10.11.12.13
+    user = username
+    pass = password
+    path = C:\scripts\
 
 ## Run Instructions
 Just run 'AcceptRiskRules.py' from your favorite Python IDE.
+
+Or you can run it from command line
+
+    python AcceptRiskRules.py
 
 If you have a fairly large SecurityCenter deployment, this script can take several minutes to complete.  So be patient.

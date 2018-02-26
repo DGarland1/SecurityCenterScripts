@@ -7,15 +7,6 @@
 Requirements:
     dicttoxml and pysecuritycenter Python modules needs to be downloaded and installed
 
-    a 'pyTenableConfig.py' file needs to be created and protected so that only the
-    LocalSystem, service account, and/or domain admins can access it as this file
-    will contain a username and password (in plaintext) to log into SecurityCenter
-    The 'pyTenableConfig.py' file has to contain the following variables:
-        hostip          - host IP of SecurityCenter
-        username        - username to log into SecurityCenter
-        password        - password to log into SecurityCenter
-        fldrloc         - folder location to store results
-
     'pyLogging.py' file is a set of reusable code so that the scripts
     can write to both console (when this script is ran from console) as well
     as to a defined log file.
