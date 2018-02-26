@@ -6,8 +6,8 @@ For the scripts in the folders (ie. RiskRules) you'll also need the pyCommon.py 
 
 Also, you'll need the following Python modules installed by downloading them manually or using pip to install
     
-    [pySecurityCenter](https://pypi.python.org/pypi/pySecurityCenter)
-    [dicttoxml](https://pypi.python.org/pypi/dicttoxml)
+[pySecurityCenter](https://pypi.python.org/pypi/pySecurityCenter)
+[dicttoxml](https://pypi.python.org/pypi/dicttoxml)
 
 ## Acknowledgements
 First and foremost, my loving wife and family who have tolerated my long hours and late nights working.
