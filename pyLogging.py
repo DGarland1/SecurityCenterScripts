@@ -27,8 +27,9 @@ import logging.handlers
 
 class clsLogging(object):
 
-    def __init__(self, scriptname):
-        self._scriptname = scriptname
+    def __init__(self, path, filename):
+        self._scriptloc = path
+        self._scriptname = filename
         self._fh = None
         self._ch = None
         # Configure debug logging
@@ -39,7 +40,7 @@ class clsLogging(object):
     def setup(self):
         # create rotating filehandler which logs messages to file
         self._fh = logging.handlers.RotatingFileHandler(
-            self._scriptname + '.log', maxBytes=500000, backupCount=5)
+            self._scriptloc + self._scriptname + '.log', maxBytes=500000, backupCount=5)
         self._fh.setLevel(logging.DEBUG)
         # create console handler which sends log messages to console
         self._ch = logging.StreamHandler()

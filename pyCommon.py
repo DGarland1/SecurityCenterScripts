@@ -9,6 +9,17 @@
 
 
 def ipversion(addr):
+    '''Returns the IP version (version 4 or 6)
+    Paramaters
+    ----------
+    addr : str
+        IP address (version 4 or 6)
+
+    Returns
+    -------
+    int : returns version of IP (4, 6, or 0 if unknown)
+
+    '''
     import socket
 
     try:  # see if IP is version 4
@@ -30,6 +41,17 @@ def ipversion(addr):
 
 
 def gethostname(name):
+    '''Returns the hostname from a NetBIOS or FQDN
+    Paramaters
+    ----------
+    name : str
+        Computer name in NetBIOS or FQDN format
+
+    Returns
+    -------
+    string : hostname of device
+
+    '''
     if '.' in name:  # name is in DNS format
         x = name.split('.')  # split DNS name into its parts and store as list
         return x[0]  # return first item in list, which should be the hostname
@@ -46,6 +68,17 @@ def gethostname(name):
 
 
 def converttime(epoch):
+    '''Converts Epoch time to local time
+    Paramaters
+    ----------
+    epoch : str or int
+        Time in Epoch format
+
+    Returns
+    -------
+    string : Local time
+
+    '''
     import time
 
     # convert to float if epoch is string or integer
@@ -58,19 +91,30 @@ def converttime(epoch):
 
 
 def writedev(fldrloc, filename, dictdetails, logger):
-    #
-    # fldrloc - folder location to store the file(s)
-    # filename - base name (without file extension) of file to be saved
-    # dictdetails - variable containing unparsed SecurityCenter data
-    # logger - variable object created in calling script for logging purposes
-    #
+    '''Dump unparsed data from SC Analysis to an XML and JSON file for testing and troubleshooting
+    Parameters
+    ----------
+    flrloc : str
+        Folder location
+    filename : str
+        Filename of XML to write to
+    dictdetails : list
+        A list of dictionaries
+    logger : obj
+        Instance of logging obj
+
+    Returns
+    -------
+    None
+
+    '''
+
     import json
     from xml.dom.minidom import parseString
 
     try:
         # Import dicttoxml module (needs to be installed, not embedded into Python)
         # Provides direct conversion of dictionary objects to XML
-        logger.info('Importing dicttoxml module')
         import dicttoxml
     except:
         # Log error and exit script
@@ -81,7 +125,7 @@ def writedev(fldrloc, filename, dictdetails, logger):
 
     # Export JSON results to a JSON file in pretty format
     try:
-        with open('{}{}_dev.json'.format(fldrloc, filename), 'w+') as outfile:
+        with open('{}{}_dev.json'.format(fldrloc, filename), 'w+', encoding='utf-8') as outfile:
             json.dump(dictdetails, outfile, sort_keys=True,
                       indent=4, ensure_ascii=False)
         outfile.close
@@ -101,7 +145,8 @@ def writedev(fldrloc, filename, dictdetails, logger):
         xmldomresult = dom.toprettyxml()
 
         # save XML in 'Pretty XML' format to text.xml file
-        f1 = open('{}{}_dev.xml'.format(fldrloc, filename), 'w+')
+        f1 = open('{}{}_dev.xml'.format(
+            fldrloc, filename), 'w+', encoding='utf-8')
         f1.write(xmldomresult)
         f1.close()
         logger.info('Data written to XML dev file at {}{}_dev.xml'.format(
@@ -115,17 +160,29 @@ def writedev(fldrloc, filename, dictdetails, logger):
 
 
 def writexml(fldrloc, filename, dictdetails, elementheader, logger):
-    #
-    # fldrloc - folder location to store the file(s)
-    # filename - base name (without file extension) of file to be saved
-    # elementheader - this changes the default <item> XML header to whatever you wish
-    # dictdetails - variable containing unparsed SecurityCenter data
-    # logger - variable object created in calling script for logging purposes
-    #
+    '''Write list (containing dictionaries) to an XML file
+    Parameters
+    ----------
+    flrloc : str
+        Folder location
+    filename : str
+        Filename of XML to write to
+    dictdetails : list
+        A list of dictionaries
+    elementheader : str
+        Name of element header for XML file
+    logger : obj
+        Instance of logging obj
+
+    Returns
+    -------
+    None
+
+    '''
+
     try:
         # Import dicttoxml module (needs to be installed, not embedded into Python)
         # Provides direct conversion of dictionary objects to XML
-        logger.info('Importing dicttoxml module')
         import dicttoxml
     except:
         # Log error and exit script
@@ -145,8 +202,6 @@ def writexml(fldrloc, filename, dictdetails, elementheader, logger):
             dictdetails, attr_type=False, item_func=my_item_func)
 
         # Import parseString class from xml.dom.minidom module (embedded into Python)
-        logger.info(
-            'Importing parseString function from xml.dom.minidom module')
         from xml.dom.minidom import parseString
 
         # Initialize xmldomresult variable so it won't crash the code if the results come back null/empty
@@ -163,7 +218,7 @@ def writexml(fldrloc, filename, dictdetails, elementheader, logger):
     # save XML in 'Pretty XML' format to 'scriptname' file
     try:
         logger.info('Saving {}{}.xml'.format(fldrloc, filename))
-        f1 = open('{}{}.xml'.format(fldrloc, filename), 'w+')
+        f1 = open('{}{}.xml'.format(fldrloc, filename), 'w+', encoding='utf-8')
         f1.write(xmldomresult)
         f1.close()
     except:

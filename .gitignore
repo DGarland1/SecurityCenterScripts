@@ -1,2 +1,3 @@
 AcceptRiskRules/__pycache__/
 *.log
+config.conf
