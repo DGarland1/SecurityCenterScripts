@@ -1,6 +1,14 @@
 # SecurityCenterScripts
 These scripts came about from a need to get around some limitations within SecurityCenter as well as to help meet regulatory compliance (PCI DSS, HIPAA, NERC-CIP, etc.)
 
+## Requirements
+For the scripts in the folders (ie. RiskRules) you'll also need the pyCommon.py and pyLogging.py files as well.  Just copy the directory structure from Github.
+
+Also, you'll need the following Python modules installed by downloading them manually or using pip to install
+    
+    [pySecurityCenter](https://pypi.python.org/pypi/pySecurityCenter)
+    [dicttoxml](https://pypi.python.org/pypi/dicttoxml)
+
 ## Acknowledgements
 First and foremost, my loving wife and family who have tolerated my long hours and late nights working.
 
