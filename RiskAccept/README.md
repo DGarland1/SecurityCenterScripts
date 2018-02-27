@@ -79,8 +79,8 @@ See below for an example of the config.conf file:
 ## Run Instructions
 Just run 'AcceptRiskRules.py' from your favorite Python IDE.
 
-Or you can run it from command line
+Or you can run it from command line.  If you use the command line, you must run python from the parent directory.
 
-    python AcceptRiskRules.py
+    python RiskAccept/AcceptRiskRules.py
 
 If you have a fairly large SecurityCenter deployment, this script can take several minutes to complete.  So be patient.
