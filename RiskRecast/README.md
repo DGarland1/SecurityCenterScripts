@@ -17,7 +17,8 @@ The XML export will provide the following fields:
 - **Protocol** - Tells you the ip protocol the rule applies to.  Typically TCP or UDP.
 - **Port** - Port number the rule applies to.
 - **PluginID** - Plugin ID that the rule applies to.
-- **Severity** - Plugin Severity.  Note that audit results (pluginID #'s > 1000000) probably won't show a severity.
+- **OrigSeverity** - Original Plugin Severity.
+- **NewSeverity** - Recasted Plugin Severity.
 - **PluginName** - Name of the plugin ID.
 - **Comments** - Here are the comments entered when the Recast Risk Rule was created.
 - **CreatedTime** - Time the rule was created.

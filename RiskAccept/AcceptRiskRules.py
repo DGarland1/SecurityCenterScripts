@@ -44,7 +44,9 @@ logger = loginstance.setup()
 
 logger.info('Running on Python version {}'.format(sys.version))
 
-# --- Main function, runs automatically ---
+# create plugin severity dictionary to store severities for already
+# queried plugins. Hopefully this will speed up the script, even if a little.
+plugdict = {}
 
 
 def main():
@@ -338,9 +340,6 @@ def writetodict(wrule, ip, ruleapplies, rulestatus, ruletarget, expires, severit
     -------
     dict : Compiled dictionary containing all the accept risk rule information for a given IP
     """
-
-    dictvar = {}
-
     reponame = wrule['repository']['name']
     protocol = wrule['protocol']
     port = wrule['port']
@@ -348,6 +347,8 @@ def writetodict(wrule, ip, ruleapplies, rulestatus, ruletarget, expires, severit
     pluginname = wrule['plugin']['name']
     time = converttime(wrule['createdTime'])
     createdby = wrule['user']['username']
+
+    dictvar = {}
 
     try:
         # Write data to dictionary variable
@@ -381,13 +382,17 @@ def getSeverity(sc, pluginID):
 
     pluginID = Plugin ID number to search the severity for
     """
+    if pluginID in plugdict:
+        return plugdict[pluginID]
+    else:
+        resp = sc.get('plugin', params={
+            'id': pluginID,
+            'fields': 'riskFactor'})
+        plugresp = resp.json()['response']
 
-    resp = sc.get('plugin', params={
-        'id': pluginID,
-        'fields': 'riskFactor'})
-    plugresp = resp.json()['response']
+        plugdict[pluginID] = plugresp['riskFactor']
 
-    return plugresp['riskFactor']
+        return plugresp['riskFactor']
 
 
 def closeexit(exit_code):

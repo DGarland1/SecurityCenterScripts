@@ -1,4 +1,5 @@
 RiskAccept/__pycache__/
 RiskRecast/__pycache__/
+__pycache__
 *.log
 config.conf

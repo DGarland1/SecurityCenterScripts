@@ -44,7 +44,9 @@ logger = loginstance.setup()
 
 logger.info('Running on Python version {}'.format(sys.version))
 
-# --- Main function, runs automatically ---
+# create plugin severity dictionary to store severities for already
+# queried plugins. Hopefully this will speed up the script, even if a little.
+plugdict = {}
 
 
 def main():
@@ -159,7 +161,7 @@ def getRuleData(hostip, username, password):
         # so there is no need to modify the 'resp' and 'rules' lines below
         #
         resp = sc.get('recastRiskRule', params={
-            'fields': 'plugin,hostValue,hostType,port,protocol,repository,user,comments,createdTime,modifiedTime,status,organization'})
+            'fields': 'plugin,hostValue,hostType,port,protocol,repository,user,comments,newSeverity,createdTime,modifiedTime,status,organization'})
         rules = resp.json()['response']
         # Each entry of data is returned as a dictionary variable stored in list 'rules'
     except Exception:
@@ -329,7 +331,13 @@ def writetodict(wrule, ip, ruleapplies, rulestatus, ruletarget, severity, commen
     dict : Compiled dictionary containing all the recast risk rule information for a given IP
     """
 
-    dictvar = {}
+    # define riskFactor, convert number to text
+    riskfactor = {}
+    riskfactor["0"] = "Info"
+    riskfactor["1"] = "Low"
+    riskfactor["2"] = "Medium"
+    riskfactor["3"] = "High"
+    riskfactor["4"] = "Critical"
 
     reponame = wrule['repository']['name']
     protocol = wrule['protocol']
@@ -338,6 +346,9 @@ def writetodict(wrule, ip, ruleapplies, rulestatus, ruletarget, severity, commen
     pluginname = wrule['plugin']['name']
     time = converttime(wrule['createdTime'])
     createdby = wrule['user']['username']
+    newseverity = riskfactor[wrule['newSeverity']]
+
+    dictvar = {}
 
     try:
         # Write data to dictionary variable
@@ -349,7 +360,8 @@ def writetodict(wrule, ip, ruleapplies, rulestatus, ruletarget, severity, commen
         dictvar['Protocol'] = protocol
         dictvar['Port'] = port
         dictvar['PluginID'] = pluginid
-        dictvar['Severity'] = severity
+        dictvar['OrigSeverity'] = severity
+        dictvar['NewSeverity'] = newseverity
         dictvar['PluginName'] = pluginname
         dictvar['Comments'] = comments
         dictvar['CreatedTime'] = time
@@ -370,13 +382,17 @@ def getSeverity(sc, pluginID):
 
     pluginID = Plugin ID number to search the severity for
     """
+    if pluginID in plugdict:
+        return plugdict[pluginID]
+    else:
+        resp = sc.get('plugin', params={
+            'id': pluginID,
+            'fields': 'riskFactor'})
+        plugresp = resp.json()['response']
 
-    resp = sc.get('plugin', params={
-        'id': pluginID,
-        'fields': 'riskFactor'})
-    plugresp = resp.json()['response']
+        plugdict[pluginID] = plugresp['riskFactor']
 
-    return plugresp['riskFactor']
+        return plugresp['riskFactor']
 
 
 def closeexit(exit_code):
