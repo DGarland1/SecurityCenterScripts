@@ -11,7 +11,7 @@ In addition to exporting the rules, it does a little extra.
 The XML export will provide the following fields:
 - **IP** - IP of the host device the rule applies to.
 - **RepoName** - Name of the repository the rule applies to.
-- **RuleApplies** - This tells you whether the rule currently applies or not for a given IP.  This is handy as some vulnerabilities get cleared due to a patch or a configuration change and you may no longer need this rule.  *Note: Keep in mind that some vulnerabilities can come and go for various, so I would advise that you keep a record of any rules you remove.
+- **RuleApplies** - This tells you whether the rule currently applies or not for a given IP.  This is handy as some vulnerabilities get cleared due to a patch or a configuration change and you may no longer need this rule.  *Note: Keep in mind that some vulnerabilities can come and go for various, so I would advise that you keep a record of any rules you remove.*
 - **RuleStatus** - Tells you if the rule is still active or not.  Normally the status is determined on the Expiration Date of the rule, but I placed this here in case Tenable is nice enough to add a way to turn rules on and off in the future.
 - **RuleTarget** - The Rule Target is either IP, Asset, or All Hosts.  This is here to help you find the rule easier in SecurityCenter if you need to change or remove it.
 - **Protocol** - Tells you the ip protocol the rule applies to.  Typically TCP or UDP.
