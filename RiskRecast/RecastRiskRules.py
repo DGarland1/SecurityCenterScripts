@@ -19,6 +19,7 @@ Requirements:
 import sys
 import os
 import getpass
+import getopt
 from configparser import ConfigParser
 
 # adds higher directory to python module path to import
@@ -36,6 +37,31 @@ sys.dont_write_bytecode = True
 scriptloc = os.path.join(os.path.dirname(os.path.realpath(__file__)), '')
 # What to save all files as (leave out file extension)
 scriptname = os.path.splitext(os.path.basename(__file__))[0]
+
+repoID = '0'  # Set repository ID to All
+filename = ''  # Initialize filename variable to empty
+
+# Get options passed via commandline
+try:
+    opts, args = getopt.getopt(sys.argv[1:], 'hr:f:', [
+                               'help', 'repoID=', 'filename='])
+except getopt.GetoptError as err:
+    print('Example: RiskRecast/RecastRiskRules.py -r 1')
+    print('Example: RiskRecast/RecastRiskRules.py -r 1 -f "siteRecastRules"')
+    sys.exit(1)
+for opt, arg in opts:
+    if opt in ('-r', '--repoID'):
+        repoID = str(arg)
+        scriptname = scriptname + '-Repo' + repoID
+    if opt in ('-f', '--filename'):
+        filename = str(arg)
+    if opt in ('-h', '--help'):
+        print('Example: RiskRecast/RecastRiskRules.py -r 1')
+        print('Example: RiskRecast/RecastRiskRules.py -r 1 -f "siteRecastRules"')
+        sys.exit(0)
+
+if filename:
+    scriptname = filename
 
 #--- Begin Logging Configuration Section ---
 # Initialize logging
@@ -161,7 +187,8 @@ def getRuleData(hostip, username, password):
         # so there is no need to modify the 'resp' and 'rules' lines below
         #
         resp = sc.get('recastRiskRule', params={
-            'fields': 'plugin,hostValue,hostType,port,protocol,repository,user,comments,newSeverity,createdTime,modifiedTime,status,organization'})
+            'repositoryIDs': repoID,
+            'fields': 'plugin,hostValue,hostType,port,protocol,repository,user,comments,newSeverity,createdTime,status'})
         rules = resp.json()['response']
         # Each entry of data is returned as a dictionary variable stored in list 'rules'
     except Exception:
