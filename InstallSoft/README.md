@@ -1,28 +1,18 @@
-# Accept Risk Rules script
+# Installed Software script
 *Important: See Requirements and Setup Instructions below before trying to run this script*
 
-This script exports the Accept Risk Rules out of SecurityCenter 5 into an XML format (which you can easily open in Excel if need be).
+This script exports a list of installed software collected by SecurityCenter using Nessus pluginID 20811 (for Windows) and 22869 (for Linux/Unix).
 
-In addition to exporting the rules, it does a little extra.
-
-- Since Accept Risk Rules can be applied to IP, Asset, or All Hosts the script will identify all IPs in the Asset and All Hosts of a repository and add the IPs to the export.  This way you can directly identify the IPs that are getting these rules applied without having to go cross reference the Asset or IP ranges of a repository.
-- One thing that I found to be such a headache was determining if an Accept Risk Rule still applied.  Over time, patches and system changes on remote systems will sooner or later remove the vulnerabilities that Nessus identifies.  So eventually, the Accept Risk Rule that you put in no longer applies.  This is such a pain to determine manually and even a bigger pain when you have to explain to an auditor every Accept Risk Rule you have in effect. *Note: Removing a rule doesn't make the vulnerability show back up immediately, it will show back up again after the next scan.  Go complain to Tenable to fix this.*
+Right now the script can only parse results from CentOS, RedHat, HP-UX, and Solaris 11.  However, the Solaris 11 parsing is untested.
 
 The XML export will provide the following fields:
-- **IP** - IP of the host device the rule applies to.
-- **RepoName** - Name of the repository the rule applies to.
-- **RuleApplies** - This tells you whether the rule currently applies or not for a given IP.  This is handy as some vulnerabilities get cleared due to a patch or a configuration change and you may no longer need this rule.  *Note: Keep in mind that some vulnerabilities can come and go for various, so I would advise that you keep a record of any rules you remove.*
-- **RuleStatus** - Tells you if the rule is still active or not.  Normally the status is determined on the Expiration Date of the rule, but I placed this here in case Tenable is nice enough to add a way to turn rules on and off in the future.
-- **RuleTarget** - The Rule Target is either IP, Asset, or All Hosts.  This is here to help you find the rule easier in SecurityCenter if you need to change or remove it.
-- **Protocol** - Tells you the ip protocol the rule applies to.  Typically TCP or UDP.
-- **Port** - Port number the rule applies to.
-- **Expires** - Expiration date of the rule.  If there is no expiration date, it'll be set to Never.
-- **PluginID** - Plugin ID that the rule applies to.
-- **Severity** - Plugin Severity.  Note that audit results (pluginID #'s > 1000000) probably won't show a severity.
-- **PluginName** - Name of the plugin ID.
-- **Comments** - Here are the comments entered when the Accept Risk Rule was created.
-- **CreatedTime** - Time the rule was created.
-- **CreatedBy** - SecurityCenter user who created the rule.
+- **AssetName** - Hostname
+- **IPAddress** - IP address
+- **SoftwareVendor** - Name of the software vendor for the installed software.
+- **SoftwareName** - Name of the installed software
+- **SoftwareVersion** - Version of the installed software
+- **InstallDate** - The date the software was installed
+- **DateCollected** - The date the information was collected by SecurityCenter
 
 Log files for the script are stored in the same directory as the script itself.
 
@@ -44,10 +34,8 @@ To run this script, your folder structure should look like this
         |   pyCommon.py
         |   pyLogging.py
         |
-        \---RiskRules
-                AcceptRiskRules.py
-
-Hopefully I'm not forgetting anything.  Let me know if I am.
+        \---InstallSoft
+                InstallSoftware.py
 
 If your system running Python has access to the internet, you can install the modules using the commands:
 ```
@@ -59,7 +47,7 @@ If you need to install manually, I would recommend you go to the pySecurityCente
 
 ## Files needed
 You'll need to download all these files:
-- AcceptRiskRules.py
+- InstallSoftware.py
 - pyCommon.py
 - pyLogging.py
 
@@ -77,11 +65,11 @@ See below for an example of the config.conf file:
     path = C:\scripts\
 
 ## Run Instructions
-Just run 'AcceptRiskRules.py' from your favorite Python IDE.
+Just run 'InstallSoftware.py' from your favorite Python IDE.
 
 Or you can run it from command line.  If you use the command line, you must run python from the parent directory.
 
-    python RiskAccept/AcceptRiskRules.py
+    python InstallSoft/InstallSoftware.py
 
 There are also some optional arguments you can use as well:
 
