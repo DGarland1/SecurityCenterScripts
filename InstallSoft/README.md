@@ -83,5 +83,3 @@ There are also some optional arguments you can use as well:
     --filename | -f <filename>
         Name of the file to save the results to.  Do not include the extension of the filename as the file will
         always be an XML file.
-
-If you have a fairly large SecurityCenter deployment, this script can take several minutes to complete.  So be patient.
