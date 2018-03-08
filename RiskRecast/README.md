@@ -83,4 +83,17 @@ Or you can run it from command line.  If you use the command line, you must run 
 
     python RiskRecast/RecastRiskRules.py
 
+There are also some optional arguments you can use as well:
+
+    --help | -h
+        Display a short help of example commands
+
+    --repoID | -r <repository ID#>
+        Tells the script to only return results for the selected repository ID#.  The repository ID# is assigned
+        to the repository by SecurityCenter when the respository is created.
+
+    --filename | -f <filename>
+        Name of the file to save the results to.  Do not include the extension of the filename as the file will
+        always be an XML file.
+
 If you have a fairly large SecurityCenter deployment, this script can take several minutes to complete.  So be patient.
