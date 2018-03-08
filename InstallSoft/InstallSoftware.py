@@ -40,13 +40,17 @@ scriptname = os.path.splitext(os.path.basename(__file__))[0]
 
 repoID = '0'  # Set repository ID to All
 filename = ''  # Initialize filename variable to empty
+endDay = '0'
+startDay = 'all'
 
 # Get options passed via commandline
 try:
-    opts, args = getopt.getopt(sys.argv[1:], 'r:f:', ['repoID=', 'filename='])
+    opts, args = getopt.getopt(sys.argv[1:], 'r:f:', [
+                               'repoID=', 'filename=', 'endDay=', 'startDay='])
 except getopt.GetoptError as err:
     print('Example: InstallSoft/InstallSoftware.py -r 1')
     print('Example: InstallSoft/InstallSoftware.py -r 1 -f "siteInstalledSoftware"')
+    print('Example: InstallSoft/InstallSoftware.py --startDay 90 --endDay 30')
     sys.exit(1)
 for opt, arg in opts:
     if opt in ('-r', '--repoID'):
@@ -54,9 +58,14 @@ for opt, arg in opts:
         scriptname = scriptname + '-Repo' + repoID
     if opt in ('-f', '--filename'):
         filename = str(arg)
+    if opt in ('--endDay'):
+        endDay = str(arg)
+    if opt in ('--startDay'):
+        startDay = str(arg)
     if opt in ('-h', '--help'):
         print('Example: InstallSoft/InstallSoftware.py -r 1')
         print('Example: InstallSoft/InstallSoftware.py -r 1 -f "siteInstalledSoftware"')
+        print('Example: InstallSoft/InstallSoftware.py --startDay 90 --endDay 30')
         sys.exit(0)
 
 if filename:
@@ -189,10 +198,10 @@ def collect(hostip, username, password):
         #
         if repoID == '0':
             details = sc.analysis(
-                ('pluginID', '=', '20811,22869'), ('lastSeen', '=', '0:all'), tool='vulndetails')
+                ('pluginID', '=', '20811,22869'), ('lastSeen', '=', endDay+':'+startDay), tool='vulndetails')
         else:
             details = sc.analysis(('repositoryIDs', '=', repoID), ('pluginID',
-                                                                   '=', '20811,22869'), ('lastSeen', '=', '0:all'), tool='vulndetails')
+                                                                   '=', '20811,22869'), ('lastSeen', '=', endDay+':'+startDay), tool='vulndetails')
         # Each entry of data is returned as a dictionary variable stored in list 'details'
         return details
     except Exception:
@@ -233,8 +242,7 @@ def parsedata(data):
 
     if data is not None:  # If details variable doesn't come back null/empty
         #--- Import additional Python modules needed ---
-        # re module should already be embedded in Python 2.7
-        logger.info('Importing RE (regex) module')
+        # re module should already be embedded in Python
         import re
 
         # Create a new list
