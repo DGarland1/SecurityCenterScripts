@@ -58,9 +58,9 @@ for opt, arg in opts:
         scriptname = scriptname + '-Repo' + repoID
     if opt in ('-f', '--filename'):
         filename = str(arg)
-    if opt in ('--endDay'):
+    if opt in '--endDay':
         endDay = str(arg)
-    if opt in ('--startDay'):
+    if opt in '--startDay':
         startDay = str(arg)
     if opt in ('-h', '--help'):
         print('Example: InstallSoft/InstallSoftware.py -r 1')
