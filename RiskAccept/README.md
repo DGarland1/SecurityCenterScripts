@@ -44,7 +44,7 @@ To run this script, your folder structure should look like this
         |   pyCommon.py
         |   pyLogging.py
         |
-        \---RiskRules
+        \---RiskAccept
                 AcceptRiskRules.py
 
 Hopefully I'm not forgetting anything.  Let me know if I am.
