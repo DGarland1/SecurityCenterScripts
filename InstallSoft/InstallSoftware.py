@@ -71,7 +71,6 @@ for opt, arg in opts:
 if filename:
     scriptname = filename
 
-
 #--- Begin Logging Configuration Section ---
 # Initialize logging
 loginstance = clsLogging(scriptloc, scriptname)
@@ -141,11 +140,6 @@ def main():
 
 def collect(hostip, username, password):
     '''--- Collect data from SecurityCenter ---
-
-       The following line in this section needs to be modified to gather the
-       specific data you want from SecurityCenter
-
-           details = sc.analysis(('repositoryIDs','=','1'),('pluginID','=','34252'), tool='vulndetails')
 
        Refer to the following sites for more information on how to build the query
        pySecurityCenter Python Module

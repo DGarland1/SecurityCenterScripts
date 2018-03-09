@@ -93,13 +93,13 @@ There are also some optional arguments you can use as well:
     startDay and endDay arguments are based on the lastseen value in SecurityCenter.  So for example, if a scan result was last seen a week ago but you are only looking between an endDay of 0 and and a startDay of 1 day ago (the last 24 hours) then the result will not be included in the XML file.  This is handy if you are importing the XML into another program or database to monitor for software changes.
     
     Examples for using endDay and startDay arguments:
-        This example gets results from SecurityCenter from now to 1 days ago.  endDay is not needed as it defaults to 0
-            python InstallSoft/InstallSoftware.py --startDay 1
+        This example gets results from SecurityCenter from now to 1 days ago.  endDay defaults to 0 if left out.
+            python PortServ/PortsServices.py --startDay 1
 
         This example gets results from SecurityCenter from 30 to 60 days ago.
-            python InstallSoft/InstallSoftware.py --startDay 60 --endDay 30
+            python PortServ/PortsServices.py --startDay 60 --endDay 30
 
-        This example gets results from SecurityCenter from 90 days ago and beyond.  startDay is not needed as it defaults to 'all'
-            python InstallSoft/InstallSoftware.py --endDay 90
+        This example gets results from SecurityCenter from 90 days ago and beyond.  startDay defaults to 'all' if left out.
+            python PortServ/PortsServices.py --endDay 90
 
 If you have a fairly large SecurityCenter deployment, this script can take several minutes to complete.  So be patient.
