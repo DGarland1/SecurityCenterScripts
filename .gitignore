@@ -3,3 +3,4 @@ RiskRecast/__pycache__/
 __pycache__
 *.log
 config.conf
+Test/*
