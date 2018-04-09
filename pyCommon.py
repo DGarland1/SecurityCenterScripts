@@ -225,5 +225,48 @@ def writexml(fldrloc, filename, dictdetails, elementheader, logger):
         # Log error and exit script
         logger.error('Failed to write XML file')
         logger.error('Unable to write the XML file', exc_info=True)
-        f1.close
+        f1.close()
         raise
+
+
+def writecsv(fldrloc, filename, dictdetails, logger):
+    '''Write list (containing dictionaries) to an XML file
+    Parameters
+    ----------
+    flrloc : str
+        Folder location
+    filename : str
+        Filename of XML to write to
+    dictdetails : list
+        A list of dictionaries
+    logger : obj
+        Instance of logging obj
+
+    Returns
+    -------
+    None
+
+    '''
+    # Import CSV module
+    import csv
+
+    try:
+        # Open CSV file for writing
+        logger.info('Saving {}{}.csv'.format(fldrloc, filename))
+        csvFile = open(fldrloc + filename + '.csv', 'w', newline='')
+
+        with csvFile:
+            # Get a list of headers for the CSV from the dictdetails
+            csvHeaders = list(dictdetails[0].keys())
+            writer = csv.DictWriter(csvFile, fieldnames=csvHeaders)
+            writer.writeheader()
+
+            # Write data from dictdetails to CSV
+            for user in dictdetails:
+                writer.writerow(user)
+    except:
+        # Log error and exit script
+        logger.error('Failed to write XML file')
+        logger.error('Unable to write the XML file', exc_info=True)
+    finally:
+        csvFile.close()
