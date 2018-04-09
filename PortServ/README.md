@@ -3,7 +3,7 @@
 
 This script exports a list of installed software collected by SecurityCenter using Nessus pluginID 34252 (for Windows) and 25221 (for Linux/AIX).
 
-The XML export will provide the following fields:
+The CSV and XML export will provide the following fields:
 - **AssetName** - Hostname
 - **IPAddress** - IP address
 - **Protocol** - Protocol type (usually TCP or UDP)
@@ -73,6 +73,9 @@ There are also some optional arguments you can use as well:
 
     --help | -h
         Display a short help of example commands
+
+    --csv | -c
+        OPTIONAL. By default, the script exports the results as an XML file.  Setting this option tells the script to export the results as a CSV file instead.
 
     --repoID | -r <repository ID#>
         OPTIONAL. Tells the script to only return results for the selected repository ID#.  The repository ID# is assigned

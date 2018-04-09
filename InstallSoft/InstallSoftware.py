@@ -28,7 +28,7 @@ sys.path.append(".")
 
 # Import reusable code dealing with setting up logging
 from pyLogging import clsLogging
-from pyCommon import converttime, writexml, gethostname
+from pyCommon import converttime, writexml, gethostname, writecsv
 
 #--- Prevent the creation of compiled import modules ---
 sys.dont_write_bytecode = True
@@ -42,11 +42,12 @@ repoID = '0'  # Set repository ID to All
 filename = ''  # Initialize filename variable to empty
 endDay = '0'
 startDay = 'all'
+optcsv = False  # Variable option to write to CSV
 
 # Get options passed via commandline
 try:
-    opts, args = getopt.getopt(sys.argv[1:], 'r:f:', [
-                               'repoID=', 'filename=', 'endDay=', 'startDay='])
+    opts, args = getopt.getopt(sys.argv[1:], 'hcr:f:', [
+                               'help', 'csv', 'repoID=', 'filename=', 'endDay=', 'startDay='])
 except getopt.GetoptError as err:
     print('Example: InstallSoft/InstallSoftware.py -r 1')
     print('Example: InstallSoft/InstallSoftware.py -r 1 -f "siteInstalledSoftware"')
@@ -67,6 +68,8 @@ for opt, arg in opts:
         print('Example: InstallSoft/InstallSoftware.py -r 1 -f "siteInstalledSoftware"')
         print('Example: InstallSoft/InstallSoftware.py --startDay 90 --endDay 30')
         sys.exit(0)
+    if opt in ('-c', '--csv'):
+        optcsv = True
 
 if filename:
     scriptname = filename
@@ -128,8 +131,10 @@ def main():
 
     # Write parse data (stored as dictionary objects in a list variable) to XML
     try:
-        writexml(fldrloc, scriptname, data, elementname, logger)
-        pass
+        if optcsv:
+            writecsv(fldrloc, scriptname, data, logger)
+        else:
+            writexml(fldrloc, scriptname, data, elementname, logger)
     except Exception:
         logger.error('Error in writexml function', exc_info=True)
         closeexit(1)

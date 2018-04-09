@@ -1,14 +1,14 @@
 # Recast Risk Rules script
 *Important: See Requirements and Setup Instructions below before trying to run this script*
 
-This script exports the Recast Risk Rules out of SecurityCenter 5 into an XML format (which you can easily open in Excel if need be).
+This script exports the Recast Risk Rules out of SecurityCenter 5 into a CSV or XML format (which you can easily open in Excel if need be).
 
 In addition to exporting the rules, it does a little extra.
 
 - Since Recast Risk Rules can be applied to IP, Asset, or All Hosts the script will identify all IPs in the Asset and All Hosts of a repository and add the IPs to the export.  This way you can directly identify the IPs that are getting these rules applied without having to go cross reference the Asset or IP ranges of a repository.
 - One thing that I found to be such a headache was determining if an Recast Risk Rule still applied.  Over time, patches and system changes on remote systems will sooner or later remove the vulnerabilities that Nessus identifies.  So eventually, the Recast Risk Rule that you put in no longer applies.  This is such a pain to determine manually and even a bigger pain when you have to explain to an auditor every Recast Risk Rule you have in effect. *Note: Removing a rule doesn't make the vulnerability show back up immediately, it will show back up again after the next scan.  Go complain to Tenable to fix this.*
 
-The XML export will provide the following fields:
+The CSV and XML export will provide the following fields:
 - **IP** - IP of the host device the rule applies to.
 - **RepoName** - Name of the repository the rule applies to.
 - **RuleApplies** - This tells you whether the rule currently applies or not for a given IP.  This is handy as some vulnerabilities get cleared due to a patch or a configuration change and you may no longer need this rule.  *Note: Keep in mind that some vulnerabilities can come and go for various, so I would advise that you keep a record of any rules you remove.*
@@ -87,6 +87,9 @@ There are also some optional arguments you can use as well:
 
     --help | -h
         Display a short help of example commands
+
+    --csv | -c
+        OPTIONAL. By default, the script exports the results as an XML file.  Setting this option tells the script to export the results as a CSV file instead.
 
     --repoID | -r <repository ID#>
         OPTIONAL. Tells the script to only return results for the selected repository ID#.  The repository ID# is assigned

@@ -5,7 +5,7 @@ This script exports a list of installed software collected by SecurityCenter usi
 
 Right now the script can only parse results from CentOS, RedHat, HP-UX, and Solaris 11.  However, the Solaris 11 parsing is untested.
 
-The XML export will provide the following fields:
+The CSV and XML export will provide the following fields:
 - **AssetName** - Hostname
 - **IPAddress** - IP address
 - **SoftwareVendor** - Name of the software vendor for the installed software.
@@ -75,6 +75,9 @@ There are also some optional arguments you can use as well:
 
     --help | -h
         Display a short help of example commands
+
+    --csv | -c
+        OPTIONAL. By default, the script exports the results as an XML file.  Setting this option tells the script to export the results as a CSV file instead.
 
     --repoID | -r <repository ID#>
         OPTIONAL. Tells the script to only return results for the selected repository ID#.  The repository ID# is assigned
