@@ -232,59 +232,17 @@ def parseusers(sc, users):
     # loop through each user found
     for user in users:
 
-        userid = user['id']
-        username = user['username']
-        firstname = user['firstname']
-        lastname = user['lastname']
-        role = user['role']['name']
-        group = user['group']['name']
+        userdict['userID'] = user['id']
+        userdict['username'] = user['username']
+        userdict['firstname'] = user['firstname']
+        userdict['lastname'] = user['lastname']
+        userdict['role'] = user['role']['name']
+        userdict['group'] = user['group']['name']
 
-        userdict = writetodict(
-            userid, username, firstname, lastname, role, group)
         userlist.append(userdict)  # append dictionary to list
         userdict = {}  # clear dictionary for next run through
 
     return userlist
-
-
-def writetodict(userid, username, firstname, lastname, role, group):
-    """Simple function to organize parsed rule data and return it in a dictionary format
-    Parameters
-    ----------
-    userid : int
-        User ID
-    username : str
-        Username of the SecurityCenter user
-    firstname : str
-        First name of the SecurityCenter user
-    lastname : str
-        Last name of the SecurityCenter user
-    role : str
-        Role the user is assigned to
-    group : str
-        Group the user is assigned to
-
-    Returns
-    -------
-    dict : Compiled dictionary containing the user information
-    """
-    dictvar = {}
-
-    try:
-        # Write data to dictionary variable
-        dictvar['userID'] = userid
-        dictvar['username'] = username
-        dictvar['firstname'] = firstname
-        dictvar['lastname'] = lastname
-        dictvar['role'] = role
-        dictvar['group'] = group
-    except Exception as e:
-        logger.error('Adding data to dictionary failed')
-        logger.error('Data string follows')
-        logger.error(e, exc_info=True)
-        closeexit(1)
-
-    return dictvar
 
 
 def closeexit(exit_code):
