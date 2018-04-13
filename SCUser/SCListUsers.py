@@ -198,7 +198,7 @@ def getUserData(hostip, username, password):
 
     try:
         if users is not None:  # If rules variable doesn't come back null/empty
-            return parseusers(sc, users)
+            return parsedata(users)
         else:
             logger.info('No list of users found')
             closeexit(0)
@@ -209,7 +209,7 @@ def getUserData(hostip, username, password):
         closeexit(1)
 
 
-def parseusers(sc, users):
+def parsedata(users):
     """Parse out the collected list of users
     Parameters
     ----------
