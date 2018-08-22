@@ -21,6 +21,7 @@ Script results are stored in whatever directory you signify.  See Setup Instruct
 Aside from the standard library of modules that come with Python 3 you will need to install the following modules:
 - [pySecurityCenter](https://github.com/SteveMcGrath/pySecurityCenter)
 - [dicttoxml](https://github.com/quandyfactory/dicttoxml)
+- [configparser](https://pypi.org/project/configparser)
 
 You'll also need the pyLogging.py and pyCommon.py files in the parent directory as well.
 
