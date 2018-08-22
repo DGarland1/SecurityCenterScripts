@@ -10,6 +10,8 @@ Also, you'll need the following Python modules installed by downloading them man
 
 [dicttoxml](https://pypi.python.org/pypi/dicttoxml)
 
+[configparser](https://pypi.org/project/configparser)
+
 ## Acknowledgements
 First and foremost, my loving wife and family who have tolerated my long hours and late nights working.
 
