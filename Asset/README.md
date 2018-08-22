@@ -40,6 +40,7 @@ If your system running Python has access to the internet, you can install the mo
 ```
 pip install pysecuritycenter
 pip install dicttoxml
+pip install configparser
 ```
 
 If you need to install manually, I would recommend you go to the pySecurityCenter and dicttoxml GitHub sites directly and follow their instructions for a manual installation of those modules.  Both modules above have additional module dependencies that you'll need to install manually as well.
