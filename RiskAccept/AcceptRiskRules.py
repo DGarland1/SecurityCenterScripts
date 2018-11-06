@@ -315,6 +315,9 @@ def parserules(sc, rules):
         elif rule['hostType'] == 'asset':
             assetID = rule['hostValue']['id']
             assetName = rule['hostValue']['name']
+            if assetID == "-1":
+                logger.warning("Asset named: {} does not exist. Line has been skipped.".format(assetName))
+                continue
             getassets = sc.analysis(
                 ('assetID', '=', assetID), ('repositoryIDs', '=', rule['repository']['id']), tool='sumip')
 
